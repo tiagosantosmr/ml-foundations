@@ -95,6 +95,37 @@ R["all_features"] = {
     "closed_form_seconds": t_cf, "gd_1000_steps_seconds": t_gd,
 }
 
+# --- one district, feature by feature ---------------------------------------
+LABELS = {"MedInc": "median income", "HouseAge": "house age", "AveRooms": "average rooms",
+          "AveBedrms": "average bedrooms", "Population": "population", "AveOccup": "average occupancy",
+          "Latitude": "latitude", "Longitude": "longitude"}
+z0 = Z_te[0]
+contrib = w_cf * z0
+R["example_district"] = {
+    "test_index": 0, "average_value": b_cf, "prediction": float(b_cf + contrib.sum()), "actual": float(y_te[0]),
+    "features": [{"name": n_, "raw_value": float(X_te[0, k]), "standardized_value": float(z0[k]),
+                  "weight": float(w_cf[k]), "contribution": float(contrib[k])} for k, n_ in enumerate(names)],
+}
+order = np.argsort(-np.abs(contrib))
+fig, ax = plt.subplots(figsize=(7.2, 4.6))
+ypos = np.arange(len(order))[::-1]
+for yy, k in zip(ypos, order):
+    v = contrib[k] * 100
+    ax.barh(yy, v, color=TEAL if v >= 0 else AMBER, height=0.55)
+    ax.text(-345, yy, LABELS[names[k]], va="center", ha="left", color=INK, fontsize=9)
+    ax.text(-222, yy, f"{w_cf[k]:+.3f} x {z0[k]:+.2f}", va="center", ha="left", color=MUTED, fontsize=8.5)
+    ax.text(52, yy, f"{'+' if v >= 0 else '-'}${abs(v):,.1f}k", va="center", ha="left", color=INK, fontsize=9)
+ax.text(-222, len(order) - 0.15, "weight x value", color=FAINT, fontsize=8, ha="left")
+ax.text(52, len(order) - 0.15, "adds or removes", color=FAINT, fontsize=8, ha="left")
+ax.axvline(0, color=FAINT, lw=1)
+ax.set_xlim(-350, 115); ax.set_ylim(-0.7, len(order) + 0.3)
+ax.set_yticks([]); ax.set_xticks([-100, -50, 0, 50]); ax.set_xticklabels(["-$100k", "-$50k", "0", "+$50k"])
+ax.grid(False); ax.spines["left"].set_visible(False)
+ax.set_title(
+    f"average district ${b_cf * 100:,.1f}k  ->  prediction ${(b_cf + contrib.sum()) * 100:,.1f}k"
+    f"   (actual ${y_te[0] * 100:,.1f}k)", fontsize=9.5, color=INK, loc="left", pad=10)
+save(fig, "one-district-breakdown.png")
+
 # --- gradient descent: learning rate --------------------------------------
 best_mse = float(np.mean((predict(Z_tr, w_cf, b_cf) - y_tr) ** 2))
 eig = np.linalg.eigvalsh(Z_tr.T @ Z_tr / len(Z_tr))

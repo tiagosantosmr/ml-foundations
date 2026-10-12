@@ -36,8 +36,72 @@
       "Longitude": -0.869841775241714
     },
     "bias": 2.071946937378618,
-    "closed_form_seconds": 0.0008854170009726658,
-    "gd_1000_steps_seconds": 0.06598454200138804
+    "closed_form_seconds": 0.0008281249974970706,
+    "gd_1000_steps_seconds": 0.06409933399845613
+  },
+  "example_district": {
+    "test_index": 0,
+    "average_value": 2.071946937378618,
+    "prediction": 0.7191228416019142,
+    "actual": 0.477,
+    "features": [
+      {
+        "name": "MedInc",
+        "raw_value": 1.6812,
+        "standardized_value": -1.1550847477886066,
+        "weight": 0.8543830309268532,
+        "contribution": -0.9868848077930095
+      },
+      {
+        "name": "HouseAge",
+        "raw_value": 25.0,
+        "standardized_value": -0.2863236926523855,
+        "weight": 0.12254623807840442,
+        "contribution": -0.035087891407267126
+      },
+      {
+        "name": "AveRooms",
+        "raw_value": 4.192200557103064,
+        "standardized_value": -0.5206857622247744,
+        "weight": -0.2944101344733008,
+        "contribution": 0.15329516527492892
+      },
+      {
+        "name": "AveBedrms",
+        "raw_value": 1.0222841225626742,
+        "standardized_value": -0.1717460324829115,
+        "weight": 0.33925949059448524,
+        "contribution": -0.058266471491776474
+      },
+      {
+        "name": "Population",
+        "raw_value": 1392.0,
+        "standardized_value": -0.030301089556940816,
+        "weight": -0.0023077231458298072,
+        "contribution": 6.992652571441417e-05
+      },
+      {
+        "name": "AveOccup",
+        "raw_value": 3.8774373259052926,
+        "standardized_value": 0.06740798113078307,
+        "weight": -0.04082910308508702,
+        "contribution": -0.002752207410346343
+      },
+      {
+        "name": "Latitude",
+        "raw_value": 36.06,
+        "standardized_value": 0.1950999995794087,
+        "weight": -0.8969288766386632,
+        "contribution": -0.17499082345496272
+      },
+      {
+        "name": "Longitude",
+        "raw_value": -119.01,
+        "standardized_value": 0.28534728163752826,
+        "weight": -0.869841775241714,
+        "contribution": -0.24820698601998492
+      }
+    ]
   },
   "gd": {
     "best_mse": 0.5179331255246699,
