@@ -95,36 +95,40 @@ R["all_features"] = {
     "closed_form_seconds": t_cf, "gd_1000_steps_seconds": t_gd,
 }
 
-# --- one district, feature by feature ---------------------------------------
-LABELS = {"MedInc": "median income", "HouseAge": "house age", "AveRooms": "average rooms",
-          "AveBedrms": "average bedrooms", "Population": "population", "AveOccup": "average occupancy",
-          "Latitude": "latitude", "Longitude": "longitude"}
-z0 = Z_te[0]
-contrib = w_cf * z0
-R["example_district"] = {
-    "test_index": 0, "average_value": b_cf, "prediction": float(b_cf + contrib.sum()), "actual": float(y_te[0]),
-    "features": [{"name": n_, "raw_value": float(X_te[0, k]), "standardized_value": float(z0[k]),
-                  "weight": float(w_cf[k]), "contribution": float(contrib[k])} for k, n_ in enumerate(names)],
-}
-order = np.argsort(-np.abs(contrib))
-fig, ax = plt.subplots(figsize=(7.2, 4.6))
-ypos = np.arange(len(order))[::-1]
-for yy, k in zip(ypos, order):
-    v = contrib[k] * 100
-    ax.barh(yy, v, color=TEAL if v >= 0 else AMBER, height=0.55)
-    ax.text(-345, yy, LABELS[names[k]], va="center", ha="left", color=INK, fontsize=9)
-    ax.text(-222, yy, f"{w_cf[k]:+.3f} x {z0[k]:+.2f}", va="center", ha="left", color=MUTED, fontsize=8.5)
-    ax.text(52, yy, f"{'+' if v >= 0 else '-'}${abs(v):,.1f}k", va="center", ha="left", color=INK, fontsize=9)
-ax.text(-222, len(order) - 0.15, "weight x value", color=FAINT, fontsize=8, ha="left")
-ax.text(52, len(order) - 0.15, "adds or removes", color=FAINT, fontsize=8, ha="left")
-ax.axvline(0, color=FAINT, lw=1)
-ax.set_xlim(-350, 115); ax.set_ylim(-0.7, len(order) + 0.3)
-ax.set_yticks([]); ax.set_xticks([-100, -50, 0, 50]); ax.set_xticklabels(["-$100k", "-$50k", "0", "+$50k"])
-ax.grid(False); ax.spines["left"].set_visible(False)
-ax.set_title(
-    f"average district ${b_cf * 100:,.1f}k  ->  prediction ${(b_cf + contrib.sum()) * 100:,.1f}k"
-    f"   (actual ${y_te[0] * 100:,.1f}k)", fontsize=9.5, color=INK, loc="left", pad=10)
-save(fig, "one-district-breakdown.png")
+# --- the weighted sum, with made-up numbers ----------------------------------
+# Illustration only: these values are invented so the arithmetic is easy to follow.
+# Nothing here comes from the dataset, and nothing is written to results.json.
+START = 40_000
+ROWS = [("size", "1,500 sq ft", 1500, 150, "$150 per sq ft"),
+        ("bedrooms", "3", 3, 10_000, "$10,000 each"),
+        ("age", "20 years", 20, -1_000, "-$1,000 per year"),
+        ("distance to centre", "10 miles", 10, -3_000, "-$3,000 per mile")]
+total = START + sum(v * w for _, _, v, w, _ in ROWS)
+fig, ax = plt.subplots(figsize=(7.2, 3.9))
+ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(-1.9, len(ROWS) + 1.7)
+COLS = [(0, "feature"), (27, "this home"), (47, "weight"), (75, "adds or removes")]
+top = len(ROWS) + 1
+for x, label in COLS:
+    ax.text(x, top, label, color=FAINT, fontsize=8.5, va="center")
+ax.plot([0, 100], [top - 0.5, top - 0.5], color=HAIRLINE, lw=1)
+ax.text(0, top - 1, "starting amount", color=MUTED, fontsize=10, va="center")
+ax.text(75, top - 1, f"${START:,}", color=INK, fontsize=10.5, va="center")
+for i, (name, shown, v, w, wlabel) in enumerate(ROWS):
+    yy = top - 2 - i
+    amount = v * w
+    colour = TEAL if amount >= 0 else AMBER
+    ax.text(0, yy, name, color=INK, fontsize=10.5, va="center")
+    ax.text(27, yy, shown, color=INK, fontsize=10.5, va="center")
+    ax.text(42, yy, "x", color=FAINT, fontsize=10, va="center")
+    ax.text(47, yy, wlabel, color=colour, fontsize=10.5, va="center")
+    ax.text(70, yy, "=", color=FAINT, fontsize=10, va="center")
+    ax.text(75, yy, f"{'+' if amount >= 0 else '-'}${abs(amount):,}", color=colour, fontsize=10.5,
+            va="center", fontweight="bold")
+ax.plot([0, 100], [-0.5, -0.5], color=FAINT, lw=1)
+ax.text(0, -1.2, "predicted price", color=INK, fontsize=11, va="center", fontweight="bold")
+ax.text(75, -1.2, f"${total:,}", color=INK, fontsize=12, va="center", fontweight="bold")
+ax.set_title("made-up numbers, to show the calculation", fontsize=9, color=MUTED, loc="left", pad=8)
+save(fig, "weighted-sum-example.png")
 
 # --- gradient descent: learning rate --------------------------------------
 best_mse = float(np.mean((predict(Z_tr, w_cf, b_cf) - y_tr) ** 2))
