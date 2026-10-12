@@ -1,0 +1,238 @@
+{
+  "rows": 20640,
+  "train_rows": 16512,
+  "test_rows": 4128,
+  "features": [
+    "MedInc",
+    "HouseAge",
+    "AveRooms",
+    "AveBedrms",
+    "Population",
+    "AveOccup",
+    "Latitude",
+    "Longitude"
+  ],
+  "one_feature": {
+    "slope": 0.4193384939381272,
+    "intercept": 0.4445972916907876,
+    "test_rmse": 0.8420901241414454,
+    "test_r2": 0.45885918903846656,
+    "baseline_rmse": 1.1448563543099792
+  },
+  "all_features": {
+    "test_rmse": 0.7455813830127763,
+    "test_r2": 0.575787706032451,
+    "train_rmse": 0.7196757085831575,
+    "max_diff_vs_sklearn": 3.9968028886505635e-15,
+    "max_diff_normal_equation": 8.770761894538737e-14,
+    "weights": {
+      "MedInc": 0.8543830309268532,
+      "HouseAge": 0.12254623807840442,
+      "AveRooms": -0.2944101344733008,
+      "AveBedrms": 0.33925949059448524,
+      "Population": -0.0023077231458298072,
+      "AveOccup": -0.04082910308508702,
+      "Latitude": -0.8969288766386632,
+      "Longitude": -0.869841775241714
+    },
+    "bias": 2.071946937378618,
+    "closed_form_seconds": 0.0008854170009726658,
+    "gd_1000_steps_seconds": 0.06598454200138804
+  },
+  "gd": {
+    "best_mse": 0.5179331255246699,
+    "lr_limit": 0.49380128960409286,
+    "runs": {
+      "0.01": {
+        "final_mse": 0.5179341414316486,
+        "steps_to_converge": null,
+        "max_weight_diff": 0.0027669086935047105,
+        "lowest_mse": 0.5179341414316486,
+        "lowest_mse_step": 4999,
+        "last_mse": 0.5179341414316486
+      },
+      "0.1": {
+        "final_mse": 0.5179331255246699,
+        "steps_to_converge": 499,
+        "max_weight_diff": 5.995204332975845e-15,
+        "lowest_mse": 0.5179331255246697,
+        "lowest_mse_step": 1878,
+        "last_mse": 0.5179331255246699
+      },
+      "0.3": {
+        "final_mse": 0.5179331255246699,
+        "steps_to_converge": 165,
+        "max_weight_diff": 2.1094237467877974e-15,
+        "lowest_mse": 0.5179331255246697,
+        "lowest_mse_step": 611,
+        "last_mse": 0.5179331255246699
+      },
+      "0.5": {
+        "final_mse": 9.387341230799759e+104,
+        "steps_to_converge": null,
+        "max_weight_diff": null,
+        "lowest_mse": 0.5277985884172092,
+        "lowest_mse_step": 26,
+        "last_mse": 9.387341230799759e+104
+      }
+    }
+  },
+  "unscaled": {
+    "runs": {
+      "0.1": {
+        "steps_before_overflow": 28,
+        "final_mse": null
+      },
+      "0.001": {
+        "steps_before_overflow": 41,
+        "final_mse": null
+      },
+      "1e-06": {
+        "steps_before_overflow": 203,
+        "final_mse": null
+      },
+      "1e-07": {
+        "steps_before_overflow": null,
+        "final_mse": 1.3199361063339257
+      }
+    },
+    "target_variance": 1.3367782117894271,
+    "condition_number_raw": 56422237502.63712,
+    "condition_number_standardized": 42.82922241185315,
+    "feature_std": {
+      "MedInc": 1.904236257747077,
+      "HouseAge": 12.602117730095111,
+      "AveRooms": 2.387302579723397,
+      "AveBedrms": 0.4332014262644869,
+      "Population": 1137.0219480466546,
+      "AveOccup": 11.578393509846865,
+      "Latitude": 2.136600595041553,
+      "Longitude": 2.005592806566646
+    }
+  },
+  "residuals": {
+    "capped_districts": 184,
+    "mean_residual_capped": 1.1529154012722116,
+    "mean_residual_rest": -0.05014551016414933,
+    "negative_predictions": 15,
+    "max_prediction": 11.500331025900953,
+    "std_by_prediction_quarter": [
+      0.5571855896759744,
+      0.6280121744210847,
+      0.7982788079175033,
+      0.9262353991177793
+    ]
+  },
+  "checks": {
+    "raw_vs_scaled_max_prediction_diff": 2.2293278334473143e-13,
+    "mean_training_target": 2.071946937378876,
+    "corr_rooms_bedrooms": 0.836162858734841
+  },
+  "overfitting": {
+    "points": 30,
+    "samples": 200,
+    "degrees": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "train_rmse_median": [
+      0.799430693169898,
+      0.7806111522706383,
+      0.7663376529419785,
+      0.749357127566897,
+      0.7338614344082679,
+      0.7006487292289324,
+      0.6866291629088483,
+      0.6761638831924244,
+      0.6669351513418276,
+      0.6407010467435648,
+      0.6277430549667871,
+      0.6064265685732937
+    ],
+    "val_rmse_median": [
+      0.855955227150426,
+      0.8613491132980563,
+      0.8734352225485214,
+      0.8847382083804343,
+      0.9021309667747481,
+      0.9327349254256396,
+      0.9858977654549534,
+      1.1492521075907014,
+      2.04808093150091,
+      6.463783060880967,
+      19.6166306937863,
+      75.16076355906719
+    ],
+    "best_degree_counts": [
+      121,
+      43,
+      24,
+      6,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "one_sample": {
+      "income_range": [
+        1.3942,
+        7.3081
+      ],
+      "fits": {
+        "1": {
+          "train_rmse": 0.7885639954831953,
+          "prediction_at_income_15": 7.200357764383234
+        },
+        "3": {
+          "train_rmse": 0.7401937512744755,
+          "prediction_at_income_15": 84.87465676960593
+        },
+        "9": {
+          "train_rmse": 0.676782508700552,
+          "prediction_at_income_15": -28118576.496313762
+        }
+      }
+    },
+    "all_rows_test_rmse": {
+      "1": 0.8420901241414454,
+      "3": 0.835641355185365,
+      "10": 0.8323267683016506
+    }
+  },
+  "conditioning": {
+    "1": {
+      "condition_number": 1.000000000000002,
+      "train_rmse_lstsq": 0.7885639954831953,
+      "train_rmse_normal_equation": 0.7885639954831956
+    },
+    "5": {
+      "condition_number": 40799.336650358804,
+      "train_rmse_lstsq": 0.7178823344543208,
+      "train_rmse_normal_equation": 0.7178823344543209
+    },
+    "10": {
+      "condition_number": 856520649604.552,
+      "train_rmse_lstsq": 0.6496411431251033,
+      "train_rmse_normal_equation": 0.649641143125282
+    },
+    "15": {
+      "condition_number": 2.617743885035934e+19,
+      "train_rmse_lstsq": 0.629531354089644,
+      "train_rmse_normal_equation": 2.6620520026748267
+    }
+  }
+}

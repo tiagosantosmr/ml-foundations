@@ -1,0 +1,6 @@
+[project]
+name = "ml-foundations"
+version = "0.1.0"
+description = "Classical ML from scratch, each algorithm checked against scikit-learn on real data. Code for the Foundations path on tiagoai.dev."
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "scikit-learn>=1.5", "matplotlib>=3.9", "pytest>=8"]
