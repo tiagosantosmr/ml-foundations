@@ -130,6 +130,39 @@ ax.text(75, -1.2, f"${total:,}", color=INK, fontsize=12, va="center", fontweight
 ax.set_title("made-up numbers, to show the calculation", fontsize=9, color=MUTED, loc="left", pad=8)
 save(fig, "weighted-sum-example.png")
 
+# --- what X and y look like ---------------------------------------------------
+# The first four training districts, raw values, to show the shape of X and y.
+HEAD = ["income", "age", "rooms", "bedrms", "popul.", "occup.", "lat.", "long."]
+FMT = ["{:.2f}", "{:.0f}", "{:.2f}", "{:.2f}", "{:,.0f}", "{:.2f}", "{:.2f}", "{:.2f}"]
+SHOWN = 4
+fig, ax = plt.subplots(figsize=(7.2, 3.5))
+ax.axis("off"); ax.set_xlim(0, 100); ax.set_ylim(-2.3, SHOWN + 3.2)
+xs = [18.5 + 8.1 * k for k in range(8)]
+yx = 91
+top = SHOWN + 1
+for x, h in zip(xs, HEAD):
+    ax.text(x, top, h, color=MUTED, fontsize=7.5, ha="center", va="center")
+ax.text(yx, top, "value", color=MUTED, fontsize=7.5, ha="center", va="center")
+for r in range(SHOWN + 2):
+    yy = top - 1 - r
+    dots = r == SHOWN
+    row = len(X_tr) - 1 if r == SHOWN + 1 else r
+    ax.text(0, yy, "..." if dots else f"row {row + 1:,}", color=FAINT, fontsize=7.5, va="center")
+    for k, x in enumerate(xs):
+        ax.text(x, yy, "..." if dots else FMT[k].format(X_tr[row, k]), color=INK, fontsize=8.5,
+                ha="center", va="center")
+    ax.text(yx, yy, "..." if dots else f"{y_tr[row]:.3f}", color=INK, fontsize=8.5, ha="center", va="center")
+lo, hi = top - SHOWN - 2.55, top - 0.45
+for x0, x1, colour in [(xs[0] - 4.8, xs[-1] + 5.5, TEAL), (yx - 5.5, yx + 5.5, AMBER)]:
+    for xe, d in [(x0, 1), (x1, -1)]:
+        ax.plot([xe + d * 1.2, xe, xe, xe + d * 1.2], [hi, hi, lo, lo], color=colour, lw=1.6)
+ax.text((xs[0] + xs[-1]) / 2, top + 1.3, "X", color=TEAL, fontsize=15, ha="center", va="center", fontweight="bold")
+ax.text(yx, top + 1.3, "y", color=AMBER, fontsize=15, ha="center", va="center", fontweight="bold")
+ax.text((xs[0] + xs[-1]) / 2, lo - 0.9, f"{len(X_tr):,} rows x {X_tr.shape[1]} columns", color=TEAL,
+        fontsize=8.5, ha="center", va="center")
+ax.text(yx, lo - 0.9, f"{len(y_tr):,} values", color=AMBER, fontsize=8.5, ha="center", va="center")
+save(fig, "x-and-y.png")
+
 # --- gradient descent: learning rate --------------------------------------
 best_mse = float(np.mean((predict(Z_tr, w_cf, b_cf) - y_tr) ** 2))
 eig = np.linalg.eigvalsh(Z_tr.T @ Z_tr / len(Z_tr))
