@@ -32,6 +32,8 @@ def gradient_descent(
     w, b = np.zeros(d), 0.0
     history = []
     for _ in range(steps):
+        # X @ w + b is the prediction for every row at once.
+        # Subtracting y gives prediction minus actual: one error per row.
         error = X @ w + b - y
         history.append(float(np.mean(error**2)))
         if not np.isfinite(history[-1]):
