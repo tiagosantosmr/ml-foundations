@@ -1,0 +1,216 @@
+{
+  "one_number": {
+    "start": 0.0,
+    "minimum": 3.0,
+    "lr": 0.1,
+    "numerical_slope_at_start": -6.000000000838668,
+    "first_steps": [
+      {
+        "x": 0.0,
+        "slope": -6.0,
+        "move": 0.6000000000000001,
+        "new_x": 0.6000000000000001
+      },
+      {
+        "x": 0.6000000000000001,
+        "slope": -4.8,
+        "move": 0.48,
+        "new_x": 1.08
+      },
+      {
+        "x": 1.08,
+        "slope": -3.84,
+        "move": 0.384,
+        "new_x": 1.464
+      },
+      {
+        "x": 1.464,
+        "slope": -3.072,
+        "move": 0.30720000000000003,
+        "new_x": 1.7711999999999999
+      },
+      {
+        "x": 1.7711999999999999,
+        "slope": -2.4576000000000002,
+        "move": 0.24576000000000003,
+        "new_x": 2.01696
+      }
+    ],
+    "x_after_10": 2.6778774528,
+    "x_after_50": 2.9999571825692186
+  },
+  "learning_rates": {
+    "0.01": {
+      "x_after_1": 0.06,
+      "x_after_2": 0.11879999999999999,
+      "x_after_10": 0.5487815793373593,
+      "x_after_20": 0.9971760847347164,
+      "steps_to_minimum": 397,
+      "distance_multiplier": 0.98
+    },
+    "0.1": {
+      "x_after_1": 0.6000000000000001,
+      "x_after_2": 1.08,
+      "x_after_10": 2.6778774528,
+      "x_after_20": 2.9654123548617948,
+      "steps_to_minimum": 36,
+      "distance_multiplier": 0.8
+    },
+    "0.9": {
+      "x_after_1": 5.4,
+      "x_after_2": 1.0799999999999992,
+      "x_after_10": 2.6778774528,
+      "x_after_20": 2.9654123548617948,
+      "steps_to_minimum": 36,
+      "distance_multiplier": -0.8
+    },
+    "1.1": {
+      "x_after_1": 6.6000000000000005,
+      "x_after_2": -1.3200000000000012,
+      "x_after_10": -15.575209267200023,
+      "x_after_20": -112.01279977342455,
+      "steps_to_minimum": null,
+      "distance_multiplier": -1.2000000000000002
+    }
+  },
+  "two_valleys": {
+    "lr": 0.02,
+    "runs": {
+      "-2.0": {
+        "end_x": -1.3008395659415775,
+        "end_value": -3.513905038934789,
+        "steps": 17
+      },
+      "2.0": {
+        "end_x": 1.1309011226299863,
+        "end_value": -1.0702301817761541,
+        "steps": 28
+      }
+    }
+  },
+  "model": {
+    "train_rows": 16512,
+    "direct": {
+      "slope": 0.4193384939381274,
+      "intercept": 0.44459729169078677
+    },
+    "gradient_check_max_diff": 3.405240533993492e-10,
+    "start_mse": 5.629742323103131,
+    "best_mse": 0.6991447170182824,
+    "income_mean": 3.88075425750969,
+    "income_std": 1.9042362577470788,
+    "raw": {
+      "lr_limit": 0.05128095026072417,
+      "runs": {
+        "0.01": {
+          "steps_to_direct_solution": 1566,
+          "slope": 0.41933849451951755,
+          "intercept": 0.44459728891917033,
+          "max_diff": 2.7716164363589257e-09,
+          "steps_before_overflow": null
+        },
+        "0.05": {
+          "steps_to_direct_solution": 311,
+          "slope": 0.4193384939381272,
+          "intercept": 0.4445972916907872,
+          "max_diff": 4.440892098500626e-16,
+          "steps_before_overflow": null
+        },
+        "0.06": {
+          "steps_to_direct_solution": null,
+          "slope": null,
+          "intercept": null,
+          "max_diff": null,
+          "steps_before_overflow": 2385
+        }
+      }
+    },
+    "standardized": {
+      "runs": {
+        "0.01": {
+          "steps_to_direct_solution": 378,
+          "slope_standardized": 0.7985195644260324,
+          "intercept_standardized": 2.0719469373788653,
+          "slope_raw_units": 0.4193384939381256,
+          "intercept_raw_units": 0.444597291690783
+        },
+        "0.05": {
+          "steps_to_direct_solution": 73,
+          "slope_standardized": 0.7985195644260347,
+          "intercept_standardized": 2.071946937378874,
+          "slope_raw_units": 0.4193384939381268,
+          "intercept_raw_units": 0.4445972916907872
+        },
+        "0.4": {
+          "steps_to_direct_solution": 5,
+          "slope_standardized": 0.7985195644260351,
+          "intercept_standardized": 2.071946937378876,
+          "slope_raw_units": 0.419338493938127,
+          "intercept_raw_units": 0.4445972916907883
+        }
+      }
+    }
+  },
+  "all_features": {
+    "features": [
+      "MedInc",
+      "HouseAge",
+      "AveRooms",
+      "AveBedrms",
+      "Population",
+      "AveOccup",
+      "Latitude",
+      "Longitude"
+    ],
+    "lr": 0.1,
+    "steps": 2000,
+    "steps_to_direct_solution": 603,
+    "max_diff": 1.6694623461432911e-09,
+    "mse": 0.5179331255246699,
+    "best_mse": 0.5179331255246699
+  },
+  "batches": {
+    "epochs": 10,
+    "best_mse": 0.5179331255246699,
+    "runs": {
+      "16512": {
+        "label": "all rows",
+        "lr": 0.1,
+        "steps_per_pass": 1,
+        "mse_after_1": 3.827188468277323,
+        "mse_after_10": 0.6801994752269075,
+        "lowest_mse": 0.6801994752269075,
+        "highest_mse_after_first_pass": 3.827188468277323
+      },
+      "32": {
+        "label": "32 rows",
+        "lr": 0.01,
+        "steps_per_pass": 516,
+        "mse_after_1": 0.5650947011242169,
+        "mse_after_10": 0.5279225178202229,
+        "lowest_mse": 0.5218630812629553,
+        "highest_mse_after_first_pass": 0.6252466648225468
+      },
+      "1": {
+        "label": "1 row",
+        "lr": 0.0001,
+        "steps_per_pass": 16512,
+        "mse_after_1": 0.6113399058873253,
+        "mse_after_10": 0.5196099578205181,
+        "lowest_mse": 0.5196099578205181,
+        "highest_mse_after_first_pass": 0.6113399058873253
+      }
+    },
+    "largest_standardized_value": 107.11644677509909,
+    "diverging": {
+      "32": {
+        "lr": 0.1,
+        "mse_after_1": 19452359.65861483
+      },
+      "1": {
+        "lr": 0.001,
+        "mse_after_1": 4188.059919081253
+      }
+    }
+  }
+}

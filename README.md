@@ -5,6 +5,7 @@ Classical machine learning from scratch. Each algorithm is implemented in NumPy,
 | # | Topic | Post |
 |---|---|---|
 | 01 | Linear regression | [Linear Regression: Zero 2 Hero](https://tiagoai.dev/notes/linear-regression) |
+| 02 | Gradient descent | Gradient Descent: Zero 2 Hero (not published yet) |
 
 ## Run it
 
