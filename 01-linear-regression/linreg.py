@@ -38,6 +38,8 @@ def gradient_descent(
         history.append(float(np.mean(error**2)))
         if not np.isfinite(history[-1]):
             break
+        # The gradient of the MSE: one number per weight, and one for the bias.
+        # Subtracting it moves each of them in the direction that lowers the loss.
         w -= lr * (2 / n) * (X.T @ error)
         b -= lr * 2 * float(np.mean(error))
     return w, b, history
