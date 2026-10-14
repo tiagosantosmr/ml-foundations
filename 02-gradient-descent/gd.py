@@ -11,12 +11,12 @@ import numpy as np
 def gradient_descent(grad, start, lr: float, steps: int) -> np.ndarray:
     """Returns every position visited, the start included."""
     x = np.array(start, dtype=float)
-    path = [x.copy()]
+    path = [x]
     for _ in range(steps):
         # grad(x) is the slope at the current position.
         # Subtracting it moves x in the direction where the function gets smaller.
         x = x - lr * grad(x)
-        path.append(x.copy())
+        path.append(x)
         if not np.all(np.isfinite(x)):
             break
     return np.array(path)
@@ -66,6 +66,7 @@ def minibatch_gradient_descent(
         order = rng.permutation(n)
         for first in range(0, n, batch_size):
             rows = order[first : first + batch_size]
-            params = params - lr * mse_gradient(X[rows], y[rows])(params)
+            grad = mse_gradient(X[rows], y[rows])
+            params = params - lr * grad(params)
         history.append(mse(X, y, params))
     return params, history

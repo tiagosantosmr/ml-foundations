@@ -126,6 +126,11 @@ for start, color in ((-2.0, TEAL), (2.0, PLUM)):
     ax.plot(shown, g(shown), color=color, lw=1, alpha=0.6)
     ax.scatter(shown, g(shown), color=color, s=14, zorder=3,
                label=f"start at {start:g}: ends at x = {p[-1]:.2f}, g = {g(p[-1]):.2f}")
+peak = float(min(np.roots([4, 0, -6, 1]), key=lambda r: abs(r)).real)
+R["two_valleys"]["peak"] = {"x": peak, "value": float(g(peak))}
+ax.scatter([peak], [g(peak)], color=AMBER, s=30, zorder=4)
+ax.annotate(f"slope is also 0 here (x = {peak:.2f})", (peak, g(peak)), xytext=(peak - 0.9, g(peak) + 1.6),
+            color=MUTED, arrowprops={"arrowstyle": "-", "color": FAINT})
 ax.set_xlabel("x")
 ax.set_ylabel("g(x) = x⁴ - 3x² + x")
 ax.legend(loc="upper center")
@@ -147,8 +152,8 @@ grad_check = float(np.max(np.abs(
 
 second_moment = np.array([[np.mean(income**2), income.mean()], [income.mean(), 1.0]])
 raw_runs, raw_paths = {}, {}
-for lr in (0.01, 0.05, 0.06):
-    p = gradient_descent(mse_gradient(income, y_tr), [0.0, 0.0], lr, steps=5000)
+for lr in (0.01, 0.05, 0.0512, 0.0514, 0.06):
+    p = gradient_descent(mse_gradient(income, y_tr), [0.0, 0.0], lr, steps=20000)
     ok = bool(np.all(np.isfinite(p[-1])))
     raw_paths[lr] = p
     raw_runs[str(lr)] = {
@@ -174,6 +179,14 @@ for lr in (0.01, 0.05, 0.4):
         "slope_raw_units": float(slope_raw), "intercept_raw_units": float(p[-1][1] - slope_raw * mu1),
     }
 
+parts = {}
+for name, v in (("raw", income), ("mean_subtracted", income - mu1),
+                ("divided_by_std", income / sd1), ("standardized", z)):
+    r = LinearRegression().fit(v, y_tr)
+    p = gradient_descent(mse_gradient(v, y_tr), [0.0, 0.0], 0.01, steps=5000)
+    parts[name] = {"steps_to_direct_solution": steps_to(p, np.array([r.coef_[0], r.intercept_])),
+                   "feature_mean": float(v.mean()), "feature_std": float(v.std())}
+
 R["model"] = {
     "train_rows": len(income),
     "direct": {"slope": float(direct[0]), "intercept": float(direct[1])},
@@ -182,6 +195,7 @@ R["model"] = {
     "income_mean": mu1, "income_std": sd1,
     "raw": {"lr_limit": float(1 / np.linalg.eigvalsh(second_moment)[-1]), "runs": raw_runs},
     "standardized": {"runs": std_runs},
+    "scaling_parts_lr_0.01": parts,
 }
 
 
@@ -196,6 +210,7 @@ def bowl(ax, x, target, path, w_range, b_range, title):
     ax.scatter(*target, color=AMBER, s=40, zorder=4)
     ax.set_xlim(*w_range)
     ax.set_ylim(*b_range)
+    ax.set_aspect("equal")
     ax.set_xlabel("weight")
     ax.set_ylabel("bias")
     ax.set_title(title, loc="left", fontsize=9, color=MUTED)
@@ -204,10 +219,10 @@ def bowl(ax, x, target, path, w_range, b_range, title):
 
 n_raw = raw_runs["0.01"]["steps_to_direct_solution"]
 n_std = std_runs["0.01"]["steps_to_direct_solution"]
-fig, axes = plt.subplots(1, 2, figsize=(7.6, 4.0))
-bowl(axes[0], income, direct, raw_paths[0.01][: n_raw + 1], (-0.1, 0.9), (-0.5, 1.0),
+fig, axes = plt.subplots(1, 2, figsize=(7.6, 4.6))
+bowl(axes[0], income, direct, raw_paths[0.01][: n_raw + 1], (-0.3, 1.2), (-0.6, 1.2),
      f"raw income: {n_raw:,} steps")
-bowl(axes[1], z, direct_z, std_paths[0.01][: n_std + 1], (-0.4, 1.6), (-0.4, 3.2),
+bowl(axes[1], z, direct_z, std_paths[0.01][: n_std + 1], (-1.0, 2.6), (-0.4, 3.2),
      f"standardized income: {n_std} steps")
 save(fig, "loss-bowl.png")
 
@@ -224,14 +239,36 @@ R["all_features"] = {
     "mse": mse(Z, y_tr, p8[-1]), "best_mse": mse(Z, y_tr, direct8),
 }
 
+# The same model on raw and on mean-subtracted features, where the ranges differ.
+R["all_features"]["feature_std"] = dict(zip(names, map(float, sd)))
+R["all_features"]["unscaled"] = {}
+for name, V in (("raw", X_tr), ("mean_subtracted", X_tr - mu)):
+    runs = {}
+    for lr in (1e-5, 1e-6, 1e-7):
+        p = gradient_descent(mse_gradient(V, y_tr), np.zeros(9), lr, steps=2000)
+        runs[str(lr)] = mse(V, y_tr, p[-1]) if np.all(np.isfinite(p[-1])) else None
+    R["all_features"]["unscaled"][name] = runs
+
 # --- how many rows per step -------------------------------------------------
 EPOCHS = 10
 n = len(Z)
+LRS = (0.4, 0.1, 0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001)
+col, row = np.unravel_index(np.argmax(np.abs(Z)), Z.shape)[::-1]
 R["batches"] = {"epochs": EPOCHS, "best_mse": R["all_features"]["best_mse"], "runs": {},
-                "largest_standardized_value": float(np.abs(Z).max())}
+                "learning_rates_tried": list(LRS), "grid": {},
+                "largest_standardized_value": float(np.abs(Z).max()),
+                "largest_standardized_feature": names[col]}
 fig, ax = plt.subplots(figsize=(7.2, 4.0))
-for (size, lr), color in zip(((n, 0.1), (32, 0.01), (1, 0.0001)), (PLUM, TEAL, AMBER)):
-    _, history = minibatch_gradient_descent(Z, y_tr, lr, EPOCHS, size)
+for size, color in zip((n, 32, 1), (PLUM, TEAL, AMBER)):
+    # Try every learning rate and keep the one with the lowest loss after 10 passes.
+    tried = {lr: minibatch_gradient_descent(Z, y_tr, lr, EPOCHS, size)[1] for lr in LRS}
+    R["batches"]["grid"][str(size)] = {
+        str(lr): {"mse_after_10": h[-1], "lowest_after_first_pass": float(min(h[1:])),
+                  "highest_after_first_pass": float(max(h[1:]))} if np.isfinite(h[-1]) else None
+        for lr, h in tried.items()
+    }
+    lr = min((lr for lr in LRS if np.isfinite(tried[lr][-1])), key=lambda lr: tried[lr][-1])
+    history = tried[lr]
     label = "all rows" if size == n else f"{size} row" + ("s" if size > 1 else "")
     R["batches"]["runs"][str(size)] = {
         "label": label, "lr": lr, "steps_per_pass": int(np.ceil(n / size)),
@@ -246,15 +283,15 @@ ax.set_yticks([0.5, 1, 2, 4])
 ax.set_yticks([], minor=True)
 ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 ax.set_xlabel("passes over the training data")
-ax.set_ylabel("training MSE")
+ax.set_ylabel("training MSE (log scale)")
 ax.legend()
 save(fig, "batch-sizes.png")
 
-# Larger learning rates for the smaller batches, to record that they fail.
-R["batches"]["diverging"] = {}
-for size, lr in ((32, 0.1), (1, 0.001)):
-    _, history = minibatch_gradient_descent(Z, y_tr, lr, 2, size)
-    R["batches"]["diverging"][str(size)] = {"lr": lr, "mse_after_1": history[1]}
+# 32 rows diverged at 0.03. Limit every standardized value to [-5, 5] and try again,
+# to check that the few extreme rows are the cause.
+_, clipped = minibatch_gradient_descent(np.clip(Z, -5, 5), y_tr, 0.03, EPOCHS, 32)
+R["batches"]["clipped_32_rows_lr_0.03"] = {"mse_after_1": clipped[1], "mse_after_10": clipped[-1],
+                                           "rows_clipped": int(np.any(np.abs(Z) > 5, axis=1).sum())}
 
 (HERE / "results.json").write_text(json.dumps(R, indent=2))
 print(json.dumps(R, indent=2))
